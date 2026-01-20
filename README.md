@@ -60,5 +60,6 @@ Swim App
 
     Next Features to work on:
 
-        * Swim quiz form 
-        * Swim skill evaluation
+        * Swim quiz form- instead of logging in, the user can download their swim quiz results to view later on
+        * Improved database functionality, adding to the database from the backend (or website)
+        
