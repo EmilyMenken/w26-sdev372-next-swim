@@ -1,4 +1,4 @@
-import { Resource } from "../types/resource";
+import type { Resource } from "../types/resource";
 
 const API_BASE = "http://localhost:3001/api";
 
