@@ -6,8 +6,8 @@ async function initDb() {
     // Disable FK checks for resets
     await pool.query("SET FOREIGN_KEY_CHECKS = 0");
 
-    await pool.query("CREATE DATABASE IF NOT EXISTS nextswim");
-    await pool.query("USE nextswim");
+    await pool.query("CREATE DATABASE IF NOT EXISTS nextSwim");
+    await pool.query("USE nextSwim");
 
     // Drop tables if they exist
     await pool.query("DROP TABLE IF EXISTS user_resources");
