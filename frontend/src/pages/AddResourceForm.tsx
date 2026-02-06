@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { addResource } from '../services/api';
-
+import './AddResource.css'; 
 
 interface Props {
   onSuccess: () => void;
