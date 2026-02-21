@@ -11,6 +11,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./backend/db:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
@@ -33,7 +34,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "5173:80"   # Nginx port 80 → host 5173
+      - "5173:80"
     depends_on:
       - backend
 

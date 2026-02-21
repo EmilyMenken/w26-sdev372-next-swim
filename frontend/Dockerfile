@@ -19,4 +19,4 @@ COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 5173
 
 # Print link and start nginx in one line
-CMD sh -c 'echo "Frontend: http://localhost:5173" && nginx -g "daemon off;"'
+CMD sh -c 'echo ">~~~~~~~~~~~Frontend: http://localhost:5173~~~~~~~~~~~<" && nginx -g "daemon off;"'

@@ -14,5 +14,5 @@ COPY . .
 # Expose backend port
 EXPOSE 3001
 
-# Start backend server
-CMD ["node", "server.js"]
+# Print info message and start the server
+CMD sh -c 'echo ">~~~~~~~~~~~Backend: http://localhost:3001/api/aquatic-resources~~~~~~~~~~~<" && node server.js'
