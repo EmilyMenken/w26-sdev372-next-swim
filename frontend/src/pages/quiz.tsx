@@ -3,36 +3,68 @@ import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
 
 export default function Quiz() {
-  const [level, setLevel] = useState<string>("Beginner");
-  const [comfort, setComfort] = useState<string>("Anxious");
-  const [preference, setPreference] = useState<string>("Water-based");
+  const [level, setLevel] = useState<string>("");
+  const [comfort, setComfort] = useState<string>("");
+  const [preference, setPreference] = useState<string>("");
+
+  // New questions
+  const [breathing, setBreathing] = useState<string>("");
+  const [kicking, setKicking] = useState<string>("");
+  const [endurance, setEndurance] = useState<string>("");
 
   const [allResources, setAllResources] = useState<Resource[]>([]);
   const [recommended, setRecommended] = useState<Resource[]>([]);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
-  // Map swim level to a number for filtering
-  const levelNumber = level === "Beginner" ? 1 : level === "Intermediate" ? 2 : 3;
-
-  // Load all resources once
   useEffect(() => {
     getResources().then((data) => setAllResources(data));
   }, []);
 
   const handleSubmit = () => {
-    // Filter resources based on swim level and preference
+    // Validate all fields are filled
+    if (!level || !comfort || !preference || !breathing || !kicking || !endurance) {
+      alert("❌ Please answer all questions before submitting!");
+      return;
+    }
+
+    // Determine numeric level based on answers
+    let numericLevel = 1; // Beginner
+    if (
+      breathing === "Yes" &&
+      kicking === "Strong" &&
+      endurance === "Long" &&
+      level === "Advanced"
+    ) {
+      numericLevel = 4; // Proficient
+      setLevel("Proficient");
+    } else if (level === "Advanced" || endurance === "Long") {
+      numericLevel = 3; // Expert
+      setLevel("Expert");
+    } else if (level === "Intermediate") {
+      numericLevel = 2; // Intermediate
+      setLevel("Intermediate");
+    } else {
+      numericLevel = 1; // Beginner
+      setLevel("Beginner");
+    }
+
+    // Filter resources by level and preference
     const filtered = allResources.filter((r) => {
-      const matchLevel = r.difficulty_level && r.difficulty_level <= levelNumber;
       const matchType =
-        preference === "Hybrid" || r.resource_type.toLowerCase().includes(preference.toLowerCase());
-      return matchLevel && matchType;
+        preference === "Hybrid" || r.resource_type?.toLowerCase().includes(preference.toLowerCase());
+
+      if (numericLevel === 4) {
+        // Proficient: show level 3 (Expert) and 4 (Proficient)
+        return r.difficulty_level && r.difficulty_level >= 3 && r.difficulty_level <= 4 && matchType;
+      } else {
+        return r.difficulty_level && r.difficulty_level <= numericLevel && matchType;
+      }
     });
 
     setRecommended(filtered);
     setSubmitted(true);
   };
 
-  // If submitted, show results + recommendations
   if (submitted) {
     return (
       <div className="quiz-page">
@@ -65,7 +97,6 @@ export default function Quiz() {
     );
   }
 
-  // Show the quiz form
   return (
     <div className="quiz-page">
       <h1>Swim Level Analysis</h1>
@@ -80,9 +111,10 @@ export default function Quiz() {
             value={level}
             onChange={(e) => setLevel(e.target.value)}
           >
-            <option value="Beginner">Level 1: Beginner (Learning basics)</option>
-            <option value="Intermediate">Level 2: Intermediate (Lap swimming)</option>
-            <option value="Advanced">Level 3: Advanced (Competitive)</option>
+            <option value="">Please select an answer</option>
+            <option value="Beginner">Beginner (Learning basics)</option>
+            <option value="Intermediate">Intermediate (Lap swimming)</option>
+            <option value="Advanced">Advanced (Competitive)</option>
           </select>
         </div>
 
@@ -94,6 +126,7 @@ export default function Quiz() {
             value={comfort}
             onChange={(e) => setComfort(e.target.value)}
           >
+            <option value="">Please select an answer</option>
             <option value="Anxious">I feel anxious or fearful</option>
             <option value="Neutral">I am okay but cautious</option>
             <option value="Confident">I feel very confident</option>
@@ -108,9 +141,55 @@ export default function Quiz() {
             value={preference}
             onChange={(e) => setPreference(e.target.value)}
           >
+            <option value="">Please select an answer</option>
             <option value="Water-based">In-water (Swimming drills)</option>
             <option value="Land-based">On-land (Strength & Mobility)</option>
             <option value="Hybrid">Both (Land and Water)</option>
+          </select>
+        </div>
+
+        {/* Breathing */}
+        <div className="quiz-group">
+          <label className="quiz-label">Can you comfortably breathe while swimming laps?</label>
+          <select
+            className="quiz-select"
+            value={breathing}
+            onChange={(e) => setBreathing(e.target.value)}
+          >
+            <option value="">Please select an answer</option>
+            <option value="No">No, I struggle</option>
+            <option value="Sometimes">Sometimes, with breaks</option>
+            <option value="Yes">Yes, comfortably</option>
+          </select>
+        </div>
+
+        {/* Kicking */}
+        <div className="quiz-group">
+          <label className="quiz-label">How strong is your kicking technique?</label>
+          <select
+            className="quiz-select"
+            value={kicking}
+            onChange={(e) => setKicking(e.target.value)}
+          >
+            <option value="">Please select an answer</option>
+            <option value="Weak">Weak, inefficient</option>
+            <option value="Moderate">Moderate, needs improvement</option>
+            <option value="Strong">Strong and consistent</option>
+          </select>
+        </div>
+
+        {/* Endurance */}
+        <div className="quiz-group">
+          <label className="quiz-label">How far can you swim continuously?</label>
+          <select
+            className="quiz-select"
+            value={endurance}
+            onChange={(e) => setEndurance(e.target.value)}
+          >
+            <option value="">Please select an answer</option>
+            <option value="Short">Short distances (1-2 laps)</option>
+            <option value="Medium">Medium (3-5 laps)</option>
+            <option value="Long">Long distances (6+ laps)</option>
           </select>
         </div>
 

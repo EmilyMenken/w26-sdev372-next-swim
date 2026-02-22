@@ -9,8 +9,7 @@ export async function getResources(): Promise<Resource[]> {
   return res.json();
 }
 
-
-export async function addResource(data: Omit<Resource, "id" | "created_at">): Promise<Resource> {
+export async function addResource(data: Partial<Resource>): Promise<Resource> {
   const res = await fetch(`${API_BASE}/aquatic-resources`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
