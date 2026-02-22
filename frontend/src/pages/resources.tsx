@@ -8,7 +8,6 @@ export default function Resources() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // function we can call anytime to refresh the data
   const loadData = () => {
     setLoading(true);
     getResources()

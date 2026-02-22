@@ -9,7 +9,7 @@ export async function getResources(): Promise<Resource[]> {
   return res.json();
 }
 
-// Fix: add type annotation for 'data'
+
 export async function addResource(data: Omit<Resource, "id" | "created_at">): Promise<Resource> {
   const res = await fetch(`${API_BASE}/aquatic-resources`, {
     method: "POST",

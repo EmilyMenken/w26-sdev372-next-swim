@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3001
 
 # Print info message and start the server
-CMD sh -c 'echo ">~~~~~~~~~~~Backend: http://localhost:3001/api/aquatic-resources~~~~~~~~~~~<" && node server.js'
+CMD sh -c 'echo ">~~~~~~~~~~~Backend: http://localhost:3001/api/aquatic-resources ~~~~~~~~~~~<" && node server.js'
