@@ -60,6 +60,7 @@ Swim App
 
     Next Features to work on:
 
-        * Swim quiz form- instead of logging in, the user can download their swim quiz results to view later on
-        * Improved database functionality, adding to the database from the backend (or website)
+        * Add additional tabs to the resource pages: Water Safety, Stroke Technique, Swim Songs, Breath Control, etc
+        * In each tab have different collapsable sections that have resources inside, for instance Swim Strokes would have Kicking Techniques, Backstroke Funcamentals, etc 
+        * Improved database functionality (can fill db with dummy data)
         
