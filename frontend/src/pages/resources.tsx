@@ -8,7 +8,6 @@ export default function Resources() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // function we can call anytime to refresh the data
   const loadData = () => {
     setLoading(true);
     getResources()
@@ -22,7 +21,6 @@ export default function Resources() {
       });
   };
 
-  
   useEffect(() => {
     loadData();
   }, []);
@@ -30,39 +28,50 @@ export default function Resources() {
   if (loading && resources.length === 0) return <p>Loading resources...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  // Group resources by difficulty_level
+  const groupedResources: Record<number, Resource[]> = {};
+  resources.forEach((r) => {
+    const level = r.difficulty_level ?? 1; // fallback to 1 if null
+    if (!groupedResources[level]) groupedResources[level] = [];
+    groupedResources[level].push(r);
+  });
+
   return (
     <div className="resources-page">
       <h1>Aquatic Resources</h1>
 
-     
       <AddResource onSuccess={loadData} />
 
-      <ul className="resources-list">
-        {resources.map((resource) => (
-          <li key={resource.id} className="resource-item">
-            <h2 className="resource-title">{resource.title}</h2>
-            {resource.difficulty_level && (
-              <p className="resource-level">Level {resource.difficulty_level}</p>
-            )}
-            {resource.resource_type && (
-              <p className="resource-type">Type: {resource.resource_type}</p>
-            )}
-            {resource.description && (
-              <p className="resource-description">{resource.description}</p>
-            )}
-            {resource.url && (
-              <a
-                className="resource-link"
-                href={resource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Resource
-              </a>
-            )}
-          </li>
+      {Object.keys(groupedResources)
+        .sort((a, b) => Number(a) - Number(b))
+        .map((level) => (
+          <details key={level} className="resource-level-group">
+            <summary>Level {level} Resources</summary>
+            <ul className="resources-list">
+              {groupedResources[Number(level)].map((r) => (
+                <li key={r.id} className="resource-item">
+                  <h2 className="resource-title">{r.title}</h2>
+                  {r.resource_type && (
+                    <p className="resource-type">Type: {r.resource_type}</p>
+                  )}
+                  {r.description && (
+                    <p className="resource-description">{r.description}</p>
+                  )}
+                  {r.url && (
+                    <a
+                      className="resource-link"
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Resource
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </details>
         ))}
-      </ul>
     </div>
   );
 }

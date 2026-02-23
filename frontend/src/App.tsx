@@ -1,7 +1,7 @@
 import Resources from "./pages/resources";
 import Quiz from "./pages/quiz";
 
-function App(): JSX.Element {
+function App() {
   return (
     <main>
       <Quiz></Quiz>
