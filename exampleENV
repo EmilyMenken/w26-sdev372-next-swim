@@ -1,0 +1,7 @@
+DB_USER= YOUR USERNAME
+DB_PASSWORD= YOUR PASSWORD
+PORT= 3001
+DB_HOST= db
+DB_NAME= nextswim
+
+(used by docker)
