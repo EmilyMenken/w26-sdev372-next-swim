@@ -23,7 +23,7 @@ export default function Quiz() {
   const handleSubmit = () => {
     // Validate all fields are filled
     if (!level || !comfort || !preference || !breathing || !kicking || !endurance) {
-      alert("❌ Please answer all questions before submitting!");
+      alert(" Please answer all questions before submitting!");
       return;
     }
 

@@ -1,6 +1,3 @@
--- Disable foreign key checks for reset
-SET FOREIGN_KEY_CHECKS = 0;
-
 -- Create database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS nextswim;
 USE nextswim;

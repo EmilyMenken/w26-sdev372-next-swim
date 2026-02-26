@@ -19,11 +19,11 @@ const AddResource: React.FC<Props> = ({ onSuccess }) => {
     e.preventDefault();
     try {
       await addResource(formData);
-      alert("✅ Resource added successfully!");
+      alert(" Resource added successfully!");
       setFormData({ title: '', resource_type: 'Video', difficulty_level: 1, description: '', url: '' });
       onSuccess(); // Refreshes the list on the main page
     } catch (err) {
-      alert("❌ Error adding resource");
+      alert(" Error adding resource");
     }
   };
 
