@@ -64,3 +64,11 @@ Swim App
         * In each tab have different collapsable sections that have resources inside, for instance Swim Strokes would have Kicking Techniques, Backstroke Funcamentals, etc 
         * Improved database functionality (can fill db with dummy data)
         
+5. Testing & Docker  
+    
+    To run the full test suite, ensure you have Docker installed. No other local dependencies are required.  
+
+    Running Tests via Docker: From the root directory, run the following command to build and execute all tests:
+        docker-compose up --build
+
+        
