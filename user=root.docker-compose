@@ -3,10 +3,8 @@ services:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD} 
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # password for root user
+      MYSQL_DATABASE: ${DB_NAME}           # optional initial database
     ports:
       - "3306:3306"
     volumes:
@@ -24,8 +22,8 @@ services:
       - "${PORT}:${PORT}"
     environment:
       DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USER: root                    # connect as root
+      DB_PASSWORD: ${DB_PASSWORD}      # root password
       DB_NAME: ${DB_NAME}
       PORT: ${PORT}
     depends_on:
