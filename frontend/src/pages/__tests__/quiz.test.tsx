@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Quiz from '../quiz';
+import * as api from '../../services/api';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('Quiz page', () => {
@@ -8,30 +9,47 @@ describe('Quiz page', () => {
     vi.restoreAllMocks();
   });
 
-  it('changes selects and triggers download', () => {
-    const createObjectURLSpy = vi.fn(() => 'blob:mock');
-    Object.defineProperty(window, 'URL', { value: { createObjectURL: createObjectURLSpy } });
-    const clickSpy = vi.fn();
-    // mock anchor click
-    const origCreateElement = document.createElement.bind(document);
-    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-      const el = origCreateElement(tagName as any);
-      if (tagName === 'a') {
-        // @ts-ignore
-        el.click = clickSpy;
-      }
-      return el;
-    });
+  it('changes selects and triggers download', async () => {
 
-    render(<Quiz />);
+  vi.spyOn(api, 'getResources').mockResolvedValue([]);
+  const createObjectURLSpy = vi.fn();
 
-    const levelSelect = screen.getAllByRole('combobox')[0];
-    const downloadBtn = screen.getByRole('button', { name: /Download Results to View/i });
+  Object.defineProperty(global.URL, 'createObjectURL', {
+    writable: true,
+    value: createObjectURLSpy,
+  });
 
-    fireEvent.change(levelSelect, { target: { value: 'Advanced' } });
-    fireEvent.click(downloadBtn);
+  const clickSpy = vi.fn();
+  const origCreateElement = document.createElement.bind(document);
 
+  vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+    const el = origCreateElement(tagName as any);
+    if (tagName === 'a') {
+      // @ts-ignore
+      el.click = clickSpy;
+    }
+    return el;
+  });
+
+  render(<Quiz />);
+
+  const selects = screen.getAllByRole('combobox');
+
+  fireEvent.change(selects[0], { target: { value: 'Advanced' } });
+  fireEvent.change(selects[1], { target: { value: 'Confident' } });
+  fireEvent.change(selects[2], { target: { value: 'Water-based' } });
+  fireEvent.change(selects[3], { target: { value: 'Yes' } });
+  fireEvent.change(selects[4], { target: { value: 'Strong' } });
+  fireEvent.change(selects[5], { target: { value: 'Long' } });
+
+  const submitBtn = screen.getByRole('button', { name: /Submit Quiz/i });
+
+  fireEvent.click(submitBtn);
+
+  await waitFor(() => {
     expect(createObjectURLSpy).toHaveBeenCalled();
     expect(clickSpy).toHaveBeenCalled();
+  });
+
   });
 });

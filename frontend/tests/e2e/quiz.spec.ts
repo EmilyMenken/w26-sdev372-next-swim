@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Quiz Flow - Complete User Journey", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/"); 
+    await page.goto("/resources"); 
     await expect(page.locator("h1:has-text('Swim Level Analysis')")).toBeVisible();
   });
 
