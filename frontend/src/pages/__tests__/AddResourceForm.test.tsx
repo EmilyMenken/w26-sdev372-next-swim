@@ -39,7 +39,8 @@ describe('AddResourceForm', () => {
     await waitFor(() => {
       expect(addResourceSpy).toHaveBeenCalled();
       expect(mockOnSuccess).toHaveBeenCalled();
-      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('✅'));
+      expect(alertSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Resource added successfully"));
     });
 
     // inputs reset
