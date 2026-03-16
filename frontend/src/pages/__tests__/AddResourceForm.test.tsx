@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import AddResource from '../AddResourceForm';
+import AddResource from '../../components/AddResourceForm';
 import * as api from '../../services/api';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 

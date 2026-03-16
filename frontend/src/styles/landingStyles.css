@@ -1,0 +1,21 @@
+.landing-page {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.landing-page h1 {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.landing-page p {
+  font-size: 18px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.landing-page h3 {
+  margin-top: 30px;
+}

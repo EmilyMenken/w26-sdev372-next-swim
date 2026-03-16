@@ -1,0 +1,82 @@
+/* Page layout */
+
+.resources-page {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1f2937;
+}
+
+/* Tabs */
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.tab {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #e6f4f7;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.tab:hover {
+  background: #d0eef5;
+}
+
+.tab.active {
+  background: #0ea5b7;
+  color: white;
+}
+
+/* Collapsible sections */
+
+.resource-section {
+  margin-top: 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 12px;
+}
+
+.resource-section summary {
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px;
+}
+
+/* Resource cards */
+
+.resource-list {
+  list-style: none;
+  padding: 0;
+}
+
+.resource-card {
+  background: white;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 10px;
+  border-left: 4px solid #0ea5b7;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.resource-card h3 {
+  margin-bottom: 8px;
+}
+
+.resource-card a {
+  color: #0284c7;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.resource-card a:hover {
+  text-decoration: underline;
+}
