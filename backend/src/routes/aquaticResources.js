@@ -1,7 +1,6 @@
 // backend/routes/aquaticResources.js
-const express = require("express");
-const pool = require("../config/db");
-
+import express from "express";
+import pool from "../config/db.js";
 const router = express.Router();
 
 // GET all aquatic resources
@@ -41,4 +40,4 @@ router.post("/", async (req, res) => {
 });
 
 
-module.exports = router;
+export default router;

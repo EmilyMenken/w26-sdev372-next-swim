@@ -1,6 +1,6 @@
-const pool = require("./db");
+import pool from "./db.js";
 
-async function initDb(retries = 10) {
+async function initDB(retries = 5) {
   while (retries) {
     try {
       await pool.query("USE nextswim");
@@ -18,8 +18,7 @@ async function initDb(retries = 10) {
   throw new Error("Database connection failed after multiple attempts.");
 }
 
-module.exports = initDb;
-
+export default initDB;
 
 /*
 const pool = mysql.createPool({

@@ -1,7 +1,7 @@
-// backend/server.js
-require("dotenv").config();
-const app = require("./app");
-const initDb = require("./src/config/initDB");
+import dotenv from "dotenv";
+dotenv.config();
+import app from "./app.js";
+import initDb from "./src/config/initDB.js"; 
 
 const PORT = process.env.PORT || 3001;
 

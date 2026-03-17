@@ -1,8 +1,8 @@
 // backend/app.js
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
-const aquaticResourcesRoutes = require("./src/routes/aquaticResources");
+import router from "./src/routes/aquaticResources.js";
 
 const app = express();
 
@@ -11,11 +11,11 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/aquatic-resources", aquaticResourcesRoutes);
+app.use("/api/aquatic-resources", router);
 
 // Health check route
 app.get("/api/swim", (req, res) => {
   res.json({ status: "Backend is running" });
 });
 
-module.exports = app;
+export default app;

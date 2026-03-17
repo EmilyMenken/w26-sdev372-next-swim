@@ -1,22 +1,33 @@
-# Stage 1: build
-FROM node:20-alpine AS build
-
+# Stage 1: Build
+FROM node:20-bullseye AS build
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Install build tools for optional native modules
+RUN apt-get update && \
+    apt-get install -y python3 make g++ bash curl git && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY . .
+# Copy package files
+COPY package*.json ./
+
+# Force Rollup to skip optional native binaries
+ENV ROLLUP_IGNORE_OPTIONAL_NATIVE=1
+
+# Install dependencies
+RUN npm install --force
+
+# Copy source code
+COPY src ./src
+COPY vite.config.ts ./
+COPY tsconfig.json ./
+COPY tsconfig.app.json ./
+COPY tsconfig.node.json ./
+
+# Build frontend
 RUN npm run build
 
-# Stage 2: serve
+# Stage 2: Serve with nginx
 FROM nginx:alpine
-
-# Copy built frontend from previous stage
 COPY --from=build /app/dist /usr/share/nginx/html
-
-# Expose port 5173
 EXPOSE 5173
-
-# Just start nginx normally
 CMD ["nginx", "-g", "daemon off;"]
