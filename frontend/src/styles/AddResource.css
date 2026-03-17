@@ -55,3 +55,35 @@
 .submit-btn:hover {
   background-color: #1557b0;
 }
+
+/* ===============================
+   TABLET
+   =============================== */
+
+@media (max-width: 1024px) {
+
+  .add-resource-container {
+    max-width: 100%;
+  }
+
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+
+@media (max-width: 640px) {
+
+  .add-resource-container {
+    padding: 1.5rem;
+  }
+
+  .form-group-row {
+    flex-direction: column;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+
+}

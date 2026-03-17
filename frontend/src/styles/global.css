@@ -104,3 +104,56 @@
   margin-top: 5px;
   text-align: right;
 }
+
+/* ===============================
+   TABLET
+   =============================== */
+
+@media (max-width: 1024px) {
+
+  .resources-page {
+    padding: 30px;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .resource-card {
+    padding: 14px;
+  }
+
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+
+@media (max-width: 640px) {
+
+  .resources-page {
+    padding: 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tab {
+    width: 100%;
+  }
+
+  .resource-card {
+    padding: 12px;
+  }
+
+  .resource-card h3 {
+    font-size: 18px;
+  }
+
+  .quiz-progress-text {
+    text-align: left;
+  }
+
+}

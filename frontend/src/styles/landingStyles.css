@@ -19,3 +19,40 @@
 .landing-page h3 {
   margin-top: 30px;
 }
+
+/* ===============================
+   TABLET
+   =============================== */
+
+@media (max-width: 1024px) {
+
+  .landing-page {
+    margin: 40px auto;
+  }
+
+  .landing-page h1 {
+    font-size: 34px;
+  }
+
+}
+
+/* ===============================
+   MOBILE
+   =============================== */
+
+@media (max-width: 640px) {
+
+  .landing-page {
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .landing-page h1 {
+    font-size: 28px;
+  }
+
+  .landing-page p {
+    font-size: 16px;
+  }
+
+}
