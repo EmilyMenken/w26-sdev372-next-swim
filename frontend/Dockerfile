@@ -22,6 +22,7 @@ COPY vite.config.ts ./
 COPY tsconfig.json ./
 COPY tsconfig.app.json ./
 COPY tsconfig.node.json ./
+COPY index.html ./
 
 # Build frontend
 RUN npm run build
