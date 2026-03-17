@@ -222,7 +222,7 @@ export default function SwimQuiz() {
 
       {step === 3 && (
         <Question
-          text="How far can you swim?"
+          text="How far can you swim? (In yards)"
           options={["12.5","25","50+"]}
           onSelect={(v)=>handleAnswer("distance",v)}
         />
