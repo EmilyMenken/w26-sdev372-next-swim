@@ -72,3 +72,25 @@ Swim App
         docker-compose up --build
 
         
+
+
+        Which best describes your swimming ability/aquatic expertise? 
+        How much do you know about water safety? How do you confident feel in the water? Follow up on if they click 3 or 4 -> How do you confident feel in deep water (>7 ft)? 
+        How comfortable are you with putting your face and eyes in the water? 
+        Can you float on your front and back? if no or only on one side then end quiz. 
+        How far(yards) can you swim on your front with arm and leg action? Follow up on if they click 12.5yds or 25 yds -> 
+        How confident are you with rhythmic or rotary breathing? If clicked 1 or 2 then end quiz.
+        Do you know the streamline position? 
+        Do you know front crawlstroke (freestyle)? if no end quiz
+        Do you know back crawlstroke? if no end quiz
+        Do you know elementary backstroke?
+        Do you know sidestroke?
+        Do you know breaststroke? if no end quiz
+        Do you know dolphin kick? if no end quiz
+        Can you do a surface dive?
+        Can you kneeling dive, standing dive, or start?
+        Do you know butterfly? 
+        How long can you tread water? if less than 1 min end quiz
+        Can you do an open turn? if no end quiz
+        Do you know the standard scull either on the front and back? 
+        Can you do a flip turn?

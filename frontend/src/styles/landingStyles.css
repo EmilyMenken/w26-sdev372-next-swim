@@ -19,7 +19,7 @@
   font-size: 60px;
   margin-bottom: 50px;
   text-align: center;
-  color: #03246d;
+  color: #08409C;
 }
 
 .landing-page p {
@@ -44,7 +44,7 @@
   margin: 40px auto;
   padding: 14px 28px;
 
-  background-color: #42C1DF;
+  background-color: #9A0B17;
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -55,6 +55,6 @@
 }
 
 .quiz-cta:hover {
-  background-color: #2A91C0;
+  background-color: #E35254;
   transform: translateY(-2px);
 }
