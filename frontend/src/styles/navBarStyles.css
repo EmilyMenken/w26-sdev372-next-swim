@@ -2,14 +2,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #0b4f6c;
+  background-color: #03246d;
   padding: 16px 32px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  
 }
 
 .navbar-logo {
   color: white;
   font-size: 22px;
-  font-weight: bold;
+  font-weight: bolder;
 }
 
 .navbar-links a {
@@ -17,6 +19,7 @@
   margin-left: 20px;
   text-decoration: none;
   font-weight: 500;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .navbar-links a:hover {

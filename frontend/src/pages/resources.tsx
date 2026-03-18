@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
 import AddResource from "../components/AddResourceForm";
-import "../styles/AddResource.css";
 
 export default function Resources() {
 

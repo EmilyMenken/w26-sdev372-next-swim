@@ -6,7 +6,7 @@ export default function Navbar() {
     <nav className="navbar">
 
       <div className="navbar-logo">
-        NextSwim
+        NS
       </div>
 
       <div className="navbar-links">
