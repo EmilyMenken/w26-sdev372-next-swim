@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function WaterSafetyQuiz(){
 
@@ -39,6 +40,10 @@ export default function WaterSafetyQuiz(){
         }}>
           Retake Quiz
         </button>
+
+        <Link to="/quiz" className="quiz-nav-button">
+          Back to Quiz Selection
+        </Link>
 
       </div>
 

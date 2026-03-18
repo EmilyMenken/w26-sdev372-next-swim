@@ -1,44 +1,12 @@
-.landing-page {
-  max-width: 900px;
-  margin: 60px auto;
-  padding: 20px;
-  text-align: left;
-}
-
-.landing-page h1 {
-  font-size: 60px;
-  margin-bottom: 50px;
-  text-align: center;
-  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-
-}
-
-.landing-page p {
-  font-size: 18px;
-  margin-bottom: 18px;
-  line-height: 1.6;
-  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-
-}
-
-.landing-page h3 {
-  margin-top: 60px;
-  font-size: 35px;
-  text-align: center;
-  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-
-}
-
 .landing-wrapper {
   min-height: 100vh;
 
   background: 
-    linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
     url("/swimmingPooLanes.jpg");
 
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 .landing-page {
@@ -47,51 +15,46 @@
   padding: 60px 20px;
 }
 
-/* body {
-  background: 
-    linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
-    url("/swimmingPooLanes.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-
-} */
-
-
-/* ===============================
-   TABLET
-   =============================== */
-
-@media (max-width: 1024px) {
-
-  .landing-page {
-    margin: 40px auto;
-  }
-
-  .landing-page h1 {
-    font-size: 34px;
-  }
-
+.landing-page h1 {
+  font-size: 60px;
+  margin-bottom: 50px;
+  text-align: center;
+  color: #03246d;
 }
 
-/* ===============================
-   MOBILE
-   =============================== */
+.landing-page p {
+  font-size: 18px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+  color: #3B3565;
+}
 
-@media (max-width: 640px) {
+.landing-page h3 {
+  margin-top: 60px;
+  font-size: 35px;
+  text-align: center;
+  color: #08409C;
+}
 
-  .landing-page {
-    margin: 20px auto;
-    padding: 15px;
-  }
+/* CTA Button */
 
-  .landing-page h1 {
-    font-size: 28px;
-  }
+.quiz-cta {
+  display: block;
+  width: fit-content;
+  margin: 40px auto;
+  padding: 14px 28px;
 
-  .landing-page p {
-    font-size: 16px;
-  }
+  background-color: #42C1DF;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
 
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.25s ease;
+}
+
+.quiz-cta:hover {
+  background-color: #2A91C0;
+  transform: translateY(-2px);
 }

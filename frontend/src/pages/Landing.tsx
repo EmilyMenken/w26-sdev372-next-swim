@@ -1,4 +1,5 @@
 import "../styles/landingStyles.css";
+import { Link } from "react-router-dom";
 
 export default function Landing() {
 
@@ -35,6 +36,10 @@ export default function Landing() {
         are just getting comfortable in the water to experienced swimmers
         looking to improve technique and endurance.
       </p>
+
+      <Link to="/quiz" className="quiz-cta">
+        Find Your Level
+      </Link>
 
       </div>
     </div>

@@ -3,6 +3,7 @@ import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
 import QuizProgress from "./ProgressBar";
 import SkillMeter from "./SkillMeter";
+import { Link } from "react-router-dom";
 
 export default function SwimQuiz() {
 
@@ -175,6 +176,10 @@ export default function SwimQuiz() {
         }}>
           Retake Quiz
         </button>
+
+        <Link to="/quiz" className="quiz-nav-button">
+          Back to Quiz Selection
+        </Link>
 
       </div>
 
