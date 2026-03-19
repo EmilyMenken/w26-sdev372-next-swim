@@ -1,0 +1,101 @@
+/* Page wrapper */
+.resources-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1f2937;
+}
+
+/* Center header properly */
+.resources-page h1 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Tabs container */
+.tabs {
+  display: flex;
+  justify-content: center; /* centers tabs horizontally */
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+/* Individual tab */
+.tab {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #e6f4f7;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.tab:hover {
+  background: #d0eef5;
+}
+
+.tab.active {
+  background: #0ea5b7;
+  color: white;
+}
+
+/* Section (Level dropdown) */
+.resource-section {
+  margin-bottom: 20px;
+}
+
+/* Dropdown summary */
+.resource-section summary {
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* Resource list */
+.resource-list {
+  list-style: none;
+  padding: 0;
+}
+
+/* Cards */
+.resource-card {
+  background: #ffffff;
+  padding: 16px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border-left: 4px solid #0ea5b7;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+/* Links */
+.resource-card a {
+  color: #0284c7;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.resource-card a:hover {
+  text-decoration: underline;
+}
+
+/* Empty state */
+.resources-page p {
+  text-align: center;
+  margin-top: 20px;
+  color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .resources-page {
+    padding: 15px;
+  }
+
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+}

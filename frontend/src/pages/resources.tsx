@@ -3,6 +3,8 @@ import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
 import AddResource from "../components/AddResource"; 
 import "../styles/global.css";
+import "../styles/AddResource.css";
+import "../styles/resourceStyles.css";
 export default function Resources() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [activeTab, setActiveTab] = useState("stroke");

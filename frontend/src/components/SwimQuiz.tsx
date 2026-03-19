@@ -4,11 +4,18 @@ import type { Resource } from "../types/resource";
 import QuizProgress from "../components/ProgressBar";
 import SkillMeter from "../components/SkillMeter";
 import { Link } from "react-router-dom";
-import "../styles/quizStyles.css"
-import "../styles/global.css"
+import "../styles/quizStyles.css";
+import "../styles/global.css";
 
 type AnswerMap = {
   [key: string]: string;
+};
+
+type Question = {
+  id: string;
+  text: string;
+  options: string[];
+  next: (value: string) => string | null;
 };
 
 export default function SwimQuiz() {
@@ -181,69 +188,63 @@ export default function SwimQuiz() {
 
   const currentQuestion = questions[currentIndex];
 
-  const findNextIndex = (id:string|null)=>{
-    if(!id) return -1;
-    return questions.findIndex(q=>q.id===id);
+  const findNextIndex = (id: string | null) => {
+    if (!id) return -1;
+    return questions.findIndex(q => q.id === id);
   };
 
-  const handleAnswer = (value:string)=>{
-
+  const handleAnswer = (value: string) => {
     const updated = { ...answers, [currentQuestion.id]: value };
     setAnswers(updated);
-
-    if(currentQuestion.endIf?.(value)){
-      finishQuiz(updated);
-      return;
-    }
 
     const nextId = currentQuestion.next(value);
     const nextIndex = findNextIndex(nextId);
 
-    if(nextIndex === -1){
+    if (nextIndex === -1) {
       finishQuiz(updated);
     } else {
       setCurrentIndex(nextIndex);
     }
   };
 
-  // SCORING
-  const calculateScores = (a:AnswerMap)=>{
+  const calculateScores = (a: AnswerMap) => {
 
     let comfort = 0;
     let technique = 0;
     let endurance = 0;
     let safety = 0;
 
-    if(a.confidence==="4") comfort+=2;
-    if(a.float==="Both") comfort+=2;
+    if (a.confidence === "4") comfort += 2;
+    if (a.float === "Both") comfort += 2;
 
-    ["freestyle","backstroke","breaststroke","butterfly"].forEach(s=>{
-      if(a[s]==="Yes") technique++;
+    ["freestyle", "backstroke", "breaststroke", "butterfly"].forEach(s => {
+      if (a[s] === "Yes") technique++;
     });
 
-    if(a.distance==="50+") endurance+=2;
-    if(a.tread==="2+ min") endurance+=2;
+    if (a.distance === "25") endurance += 1;
+    if (a.distance === "50+") endurance += 2;
 
-    if(a.float==="Both") safety++;
-    if(a.tread && a.tread!=="<1 min") safety++;
+    if (a.tread === "1-2 min") endurance += 1;
+    if (a.tread === "2+ min") endurance += 2;
+
+    if (a.float === "Both") safety++;
+    if (a.tread && a.tread !== "<1 min") safety++;
 
     const result = { comfort, technique, endurance, safety };
 
     setScores(result);
 
     setLevels({
-      comfort: comfort>=3?"Confident":comfort>=2?"Developing":"Beginner",
-      technique: technique>=4?"Advanced":technique>=2?"Intermediate":"Beginner",
-      endurance: endurance>=3?"Advanced":endurance>=2?"Intermediate":"Beginner",
-      safety: safety===2?"Safe":"Needs Work"
+      comfort: comfort >= 3 ? "Confident" : comfort >= 2 ? "Developing" : "Beginner",
+      technique: technique >= 4 ? "Advanced" : technique >= 2 ? "Intermediate" : "Beginner",
+      endurance: endurance >= 3 ? "Advanced" : endurance >= 2 ? "Intermediate" : "Beginner",
+      safety: safety === 2 ? "Safe" : "Needs Work"
     });
 
     return result;
   };
 
-  // FEEDBACK
-  const generateFeedback = (a:AnswerMap)=>{
-
+  const generateFeedback = (a: AnswerMap) => {
     let level = "";
     let tips: string[] = [];
 
@@ -254,74 +255,77 @@ export default function SwimQuiz() {
     else level = "Level 4: Advanced Technique";
 
     if (a.confidence === "1" || a.confidence === "2") {
-      tips.push("Build comfort in the water through shallow water practice.");
-    }
-
-    if (a.faceWater === "Not comfortable") {
-      tips.push("Practice putting your face in the water and controlled breathing.");
-    }
-
-    if (a.breathing === "1" || a.breathing === "2") {
-      tips.push("Work on rhythmic breathing and side breathing drills.");
+      tips.push("Build comfort in shallow water.");
     }
 
     if (a.distance === "12.5") {
-      tips.push("Improve endurance with short, repeated swims.");
+      tips.push("Increase endurance with short repeated swims.");
     }
 
     if (a.tread === "<1 min") {
-      tips.push("Practice treading water using eggbeater or scissor kick.");
-    }
-
-    if (a.flipTurn === "No" && level.includes("Advanced")) {
-      tips.push("Learn flip turns to improve efficiency.");
+      tips.push("Practice treading water techniques.");
     }
 
     if (tips.length === 0) {
-      tips.push("Great job! Continue refining your technique and endurance.");
+      tips.push("Great job! Continue refining technique.");
     }
 
     setSwimLevel(level);
     setFeedback(tips);
   };
 
-  const finishQuiz = (finalAnswers:AnswerMap)=>{
-    calculateScores(finalAnswers);
+  const getRecommendedResources = (scoreData: any) => {
+
+    let difficultyCap = 2;
+
+    if (scoreData.endurance >= 3 || scoreData.technique >= 3) {
+      difficultyCap = 4;
+    } else if (scoreData.endurance >= 2) {
+      difficultyCap = 3;
+    }
+
+    return resources
+      .filter(r => r.difficulty_level && r.difficulty_level <= difficultyCap)
+      .slice(0, 5);
+  };
+
+  const finishQuiz = (finalAnswers: AnswerMap) => {
+    const scoreData = calculateScores(finalAnswers);
     generateFeedback(finalAnswers);
-
-    const filtered = resources.filter(
-      r => r.difficulty_level && r.difficulty_level <= 2
-    );
-
-    setRecommended(filtered);
+    setRecommended(getRecommendedResources(scoreData));
     setSubmitted(true);
   };
 
-  // RESULTS
-  if(submitted){
-    return(
+  if (submitted) {
+    return (
       <div className="quiz-page">
 
         <h2>{swimLevel}</h2>
 
         <h3>Your Personalized Plan</h3>
         <ul>
-          {feedback.map((tip,i)=>(
-            <li key={i}>{tip}</li>
+          {feedback.map((tip, i) => <li key={i}>{tip}</li>)}
+        </ul>
+
+        <SkillMeter label="Comfort" score={scores.comfort} max={4} level={levels.comfort} />
+        <SkillMeter label="Technique" score={scores.technique} max={4} level={levels.technique} />
+        <SkillMeter label="Endurance" score={scores.endurance} max={4} level={levels.endurance} />
+        <SkillMeter label="Safety" score={scores.safety} max={2} level={levels.safety} />
+
+        <h3>Recommended Resources</h3>
+        <ul>
+          {recommended.map(r => (
+            <li key={r.id}>
+              <a href={r.url} target="_blank">{r.title}</a>
+            </li>
           ))}
         </ul>
 
-        <SkillMeter label="Comfort" score={scores.comfort} max={4} level={levels.comfort}/>
-        <SkillMeter label="Technique" score={scores.technique} max={4} level={levels.technique}/>
-        <SkillMeter label="Endurance" score={scores.endurance} max={4} level={levels.endurance}/>
-        <SkillMeter label="Safety" score={scores.safety} max={2} level={levels.safety}/>
+        <Link to="/resources" className="quiz-nav-button">
+          Explore Full Resource Library
+        </Link>
 
-        <h3>Recommended Resources</h3>
-        {recommended.map(r=>(
-          <li key={r.id}>{r.title}</li>
-        ))}
-
-        <button onClick={()=>{
+        <button onClick={() => {
           setAnswers({});
           setCurrentIndex(0);
           setSubmitted(false);
@@ -329,27 +333,23 @@ export default function SwimQuiz() {
           Retake Quiz
         </button>
 
-        <Link to="/quiz" className="quiz-nav-button">
-          Back to Quiz Selection
-        </Link>
-
       </div>
     );
   }
 
-  return(
+  return (
     <div className="quiz-page">
 
-      <QuizProgress current={currentIndex+1} total={questions.length}/>
+      <QuizProgress current={currentIndex + 1} total={questions.length} />
 
       <div className="quiz-container">
         <h3>{currentQuestion.text}</h3>
 
-        {currentQuestion.options.map(option=>(
+        {currentQuestion.options.map(option => (
           <button
             key={option}
             className="quiz-button"
-            onClick={()=>handleAnswer(option)}
+            onClick={() => handleAnswer(option)}
           >
             {option}
           </button>
