@@ -1,306 +1,361 @@
 import { useState, useEffect } from "react";
 import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
-import QuizProgress from "./ProgressBar";
-import SkillMeter from "./SkillMeter";
+import QuizProgress from "../components/ProgressBar";
+import SkillMeter from "../components/SkillMeter";
+import { Link } from "react-router-dom";
+import "../styles/quizStyles.css";
+import "../styles/global.css";
+
+type AnswerMap = {
+  [key: string]: string;
+};
+
+type Question = {
+  id: string;
+  text: string;
+  options: string[];
+  next: (value: string) => string | null;
+};
 
 export default function SwimQuiz() {
 
-  const totalQuestions = 8;
-
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<any>({});
+  const [answers, setAnswers] = useState<AnswerMap>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
 
   const [resources, setResources] = useState<Resource[]>([]);
   const [recommended, setRecommended] = useState<Resource[]>([]);
 
-  const [submitted, setSubmitted] = useState(false);
+  const [scores, setScores] = useState({
+    comfort: 0,
+    technique: 0,
+    endurance: 0,
+    safety: 0
+  });
 
-  const [comfortLevel, setComfortLevel] = useState("");
-  const [techniqueLevel, setTechniqueLevel] = useState("");
-  const [enduranceLevel, setEnduranceLevel] = useState("");
-  const [safetyLevel, setSafetyLevel] = useState("");
+  const [levels, setLevels] = useState({
+    comfort: "",
+    technique: "",
+    endurance: "",
+    safety: ""
+  });
 
-  const [comfortScore, setComfortScore] = useState(0);
-  const [techniqueScore, setTechniqueScore] = useState(0);
-  const [enduranceScore, setEnduranceScore] = useState(0);
-  const [safetyScore, setSafetyScore] = useState(0);
+  const [swimLevel, setSwimLevel] = useState("");
+  const [feedback, setFeedback] = useState<string[]>([]);
 
   useEffect(() => {
-    getResources().then(data => setResources(data));
+    getResources().then(setResources);
   }, []);
 
-  const handleAnswer = (key: string, value: string) => {
-    setAnswers({ ...answers, [key]: value });
-    setStep(step + 1);
+  // QUESTIONS
+  const questions = [
+    {
+      id: "ability",
+      text: "Which best describes your swimming ability?",
+      options: ["Beginner","Intermediate","Advanced"],
+      next: () => "confidence"
+    },
+    {
+      id: "confidence",
+      text: "How confident do you feel in the water?",
+      options: ["1","2","3","4"],
+      next: (a:string)=> (a==="3"||a==="4") ? "deepConfidence" : "faceWater"
+    },
+    {
+      id: "deepConfidence",
+      text: "How confident are you in deep water (>7 ft)?",
+      options: ["Low","Medium","High"],
+      next: () => "faceWater"
+    },
+    {
+      id: "faceWater",
+      text: "How comfortable are you putting your face in the water?",
+      options: ["Not comfortable","Somewhat","Comfortable"],
+      next: () => "float"
+    },
+    {
+      id: "float",
+      text: "Can you float on your front and back?",
+      options: ["No","One","Both"],
+      endIf: (a:string)=> a !== "Both",
+      next: () => "distance"
+    },
+    {
+      id: "distance",
+      text: "How far can you swim (yards)?",
+      options: ["12.5","25","50+"],
+      next: () => "breathing"
+    },
+    {
+      id: "breathing",
+      text: "How confident are you with rhythmic/rotary breathing?",
+      options: ["1","2","3","4"],
+      endIf: (a:string)=> a==="1"||a==="2",
+      next: () => "streamline"
+    },
+    {
+      id: "streamline",
+      text: "Do you know streamline position?",
+      options: ["Yes","No"],
+      next: () => "freestyle"
+    },
+    {
+      id: "freestyle",
+      text: "Do you know freestyle (front crawl)?",
+      options: ["Yes","No"],
+      endIf: (a:string)=> a==="No",
+      next: () => "backstroke"
+    },
+    {
+      id: "backstroke",
+      text: "Do you know backstroke?",
+      options: ["Yes","No"],
+      endIf: (a:string)=> a==="No",
+      next: () => "elementary"
+    },
+    {
+      id: "elementary",
+      text: "Do you know elementary backstroke?",
+      options: ["Yes","No"],
+      next: () => "sidestroke"
+    },
+    {
+      id: "sidestroke",
+      text: "Do you know sidestroke?",
+      options: ["Yes","No"],
+      next: () => "breaststroke"
+    },
+    {
+      id: "breaststroke",
+      text: "Do you know breaststroke?",
+      options: ["Yes","No"],
+      endIf: (a:string)=> a==="No",
+      next: () => "dolphin"
+    },
+    {
+      id: "dolphin",
+      text: "Do you know dolphin kick?",
+      options: ["Yes","No"],
+      endIf: (a:string)=> a==="No",
+      next: () => "surfaceDive"
+    },
+    {
+      id: "surfaceDive",
+      text: "Can you do a surface dive?",
+      options: ["Yes","No"],
+      next: () => "dives"
+    },
+    {
+      id: "dives",
+      text: "Can you do kneeling, standing, or starting dives?",
+      options: ["Yes","No"],
+      next: () => "butterfly"
+    },
+    {
+      id: "butterfly",
+      text: "Do you know butterfly?",
+      options: ["Yes","No"],
+      next: () => "tread"
+    },
+    {
+      id: "tread",
+      text: "How long can you tread water?",
+      options: ["<1 min","1-2 min","2+ min"],
+      endIf: (a:string)=> a === "<1 min",
+      next: () => "openTurn"
+    },
+    {
+      id: "openTurn",
+      text: "Can you do an open turn?",
+      options: ["Yes","No"],
+      endIf: (a:string)=> a==="No",
+      next: () => "scull"
+    },
+    {
+      id: "scull",
+      text: "Do you know standard sculling (front/back)?",
+      options: ["Yes","No"],
+      next: () => "flipTurn"
+    },
+    {
+      id: "flipTurn",
+      text: "Can you do a flip turn?",
+      options: ["Yes","No"],
+      next: () => null
+    }
+  ];
+
+  const currentQuestion = questions[currentIndex];
+
+  const findNextIndex = (id: string | null) => {
+    if (!id) return -1;
+    return questions.findIndex(q => q.id === id);
   };
 
-  const calculateLevels = () => {
+  const handleAnswer = (value: string) => {
+    const updated = { ...answers, [currentQuestion.id]: value };
+    setAnswers(updated);
 
-    // Comfort
+    const nextId = currentQuestion.next(value);
+    const nextIndex = findNextIndex(nextId);
+
+    if (nextIndex === -1) {
+      finishQuiz(updated);
+    } else {
+      setCurrentIndex(nextIndex);
+    }
+  };
+
+  const calculateScores = (a: AnswerMap) => {
+
     let comfort = 0;
-
-    if (answers.confidence === "Very confident") comfort += 2;
-    if (answers.float === "Both") comfort += 1;
-
-    setComfortScore(comfort);
-
-    if (comfort >= 3) setComfortLevel("Confident");
-    else if (comfort >= 2) setComfortLevel("Comfortable");
-    else if (comfort >= 1) setComfortLevel("Developing");
-    else setComfortLevel("Beginner");
-
-
-    // Technique
     let technique = 0;
-
-    if (answers.freestyle === "Yes") technique++;
-    if (answers.backstroke === "Yes") technique++;
-    if (answers.breaststroke === "Yes") technique++;
-
-    setTechniqueScore(technique);
-
-    if (technique >= 3) setTechniqueLevel("Advanced");
-    else if (technique >= 2) setTechniqueLevel("Intermediate");
-    else if (technique >= 1) setTechniqueLevel("Developing");
-    else setTechniqueLevel("Beginner");
-
-
-    // Endurance
     let endurance = 0;
-
-    if (answers.distance === "50+") endurance += 2;
-    else if (answers.distance === "25") endurance += 1;
-
-    if (answers.tread === "1+ minute") endurance += 2;
-    else if (answers.tread === "30-60 seconds") endurance += 1;
-
-    setEnduranceScore(endurance);
-
-    if (endurance >= 3) setEnduranceLevel("Advanced");
-    else if (endurance >= 2) setEnduranceLevel("Intermediate");
-    else setEnduranceLevel("Beginner");
-
-
-    // Safety
     let safety = 0;
 
-    if (answers.float === "Both") safety++;
-    if (answers.confidence === "Very confident") safety++;
+    if (a.confidence === "4") comfort += 2;
+    if (a.float === "Both") comfort += 2;
 
-    setSafetyScore(safety);
+    ["freestyle", "backstroke", "breaststroke", "butterfly"].forEach(s => {
+      if (a[s] === "Yes") technique++;
+    });
 
-    if (safety === 2) setSafetyLevel("Advanced");
-    else if (safety === 1) setSafetyLevel("Intermediate");
-    else setSafetyLevel("Beginner");
+    if (a.distance === "25") endurance += 1;
+    if (a.distance === "50+") endurance += 2;
+
+    if (a.tread === "1-2 min") endurance += 1;
+    if (a.tread === "2+ min") endurance += 2;
+
+    if (a.float === "Both") safety++;
+    if (a.tread && a.tread !== "<1 min") safety++;
+
+    const result = { comfort, technique, endurance, safety };
+
+    setScores(result);
+
+    setLevels({
+      comfort: comfort >= 3 ? "Confident" : comfort >= 2 ? "Developing" : "Beginner",
+      technique: technique >= 4 ? "Advanced" : technique >= 2 ? "Intermediate" : "Beginner",
+      endurance: endurance >= 3 ? "Advanced" : endurance >= 2 ? "Intermediate" : "Beginner",
+      safety: safety === 2 ? "Safe" : "Needs Work"
+    });
+
+    return result;
   };
 
-  const finishQuiz = () => {
+  const generateFeedback = (a: AnswerMap) => {
+    let level = "";
+    let tips: string[] = [];
 
-    calculateLevels();
+    if (a.float !== "Both") level = "Level 1: Water Acclimation";
+    else if (a.distance === "12.5" || a.tread === "<1 min") level = "Level 2: Basic Survival";
+    else if (a.freestyle === "No" || a.backstroke === "No" || a.breaststroke === "No")
+      level = "Level 3: Stroke Development";
+    else level = "Level 4: Advanced Technique";
 
-    const filtered = resources.filter(
-      r => r.difficulty_level && r.difficulty_level <= 2
-    );
+    if (a.confidence === "1" || a.confidence === "2") {
+      tips.push("Build comfort in shallow water.");
+    }
 
-    setRecommended(filtered);
+    if (a.distance === "12.5") {
+      tips.push("Increase endurance with short repeated swims.");
+    }
 
+    if (a.tread === "<1 min") {
+      tips.push("Practice treading water techniques.");
+    }
+
+    if (tips.length === 0) {
+      tips.push("Great job! Continue refining technique.");
+    }
+
+    setSwimLevel(level);
+    setFeedback(tips);
+  };
+
+  const getRecommendedResources = (scoreData: any) => {
+
+    let difficultyCap = 2;
+
+    if (scoreData.endurance >= 3 || scoreData.technique >= 3) {
+      difficultyCap = 4;
+    } else if (scoreData.endurance >= 2) {
+      difficultyCap = 3;
+    }
+
+    return resources
+      .filter(r => r.difficulty_level && r.difficulty_level <= difficultyCap)
+      .slice(0, 5);
+  };
+
+  const finishQuiz = (finalAnswers: AnswerMap) => {
+    const scoreData = calculateScores(finalAnswers);
+    generateFeedback(finalAnswers);
+    setRecommended(getRecommendedResources(scoreData));
     setSubmitted(true);
   };
 
   if (submitted) {
-
     return (
-
       <div className="quiz-page">
 
-        <h2>Your NextSwim Profile</h2>
+        <h2>{swimLevel}</h2>
 
-        <SkillMeter
-          label="Comfort"
-          score={comfortScore}
-          max={3}
-          level={comfortLevel}
-        />
+        <h3>Your Personalized Plan</h3>
+        <ul>
+          {feedback.map((tip, i) => <li key={i}>{tip}</li>)}
+        </ul>
 
-        <SkillMeter
-          label="Technique"
-          score={techniqueScore}
-          max={3}
-          level={techniqueLevel}
-        />
-
-        <SkillMeter
-          label="Endurance"
-          score={enduranceScore}
-          max={4}
-          level={enduranceLevel}
-        />
-
-        <SkillMeter
-          label="Safety Awareness"
-          score={safetyScore}
-          max={2}
-          level={safetyLevel}
-        />
+        <SkillMeter label="Comfort" score={scores.comfort} max={4} level={levels.comfort} />
+        <SkillMeter label="Technique" score={scores.technique} max={4} level={levels.technique} />
+        <SkillMeter label="Endurance" score={scores.endurance} max={4} level={levels.endurance} />
+        <SkillMeter label="Safety" score={scores.safety} max={2} level={levels.safety} />
 
         <h3>Recommended Resources</h3>
+        <ul>
+          {recommended.map(r => (
+            <li key={r.id}>
+              <a href={r.url} target="_blank">{r.title}</a>
+            </li>
+          ))}
+        </ul>
 
-        {recommended.length > 0 ? (
-
-          <ul>
-
-            {recommended.map(r => (
-
-              <li key={r.id}>
-                {r.title} ({r.resource_type})
-              </li>
-
-            ))}
-
-          </ul>
-
-        ) : (
-
-          <p>No resources available yet.</p>
-
-        )}
+        <Link to="/resources" className="quiz-nav-button">
+          Explore Full Resource Library
+        </Link>
 
         <button onClick={() => {
-
-          setSubmitted(false);
-          setStep(0);
           setAnswers({});
-
+          setCurrentIndex(0);
+          setSubmitted(false);
         }}>
           Retake Quiz
         </button>
 
       </div>
-
     );
-
   }
 
   return (
-
     <div className="quiz-page">
 
-      <QuizProgress current={step + 1} total={totalQuestions} />
+      <QuizProgress current={currentIndex + 1} total={questions.length} />
 
-      {step === 0 && (
-        <Question
-          text="Which best describes your swimming ability?"
-          options={["Beginner","Intermediate","Advanced"]}
-          onSelect={(v)=>handleAnswer("ability",v)}
-        />
-      )}
+      <div className="quiz-container">
+        <h3>{currentQuestion.text}</h3>
 
-      {step === 1 && (
-        <Question
-          text="How confident do you feel in the water?"
-          options={["Not confident","Somewhat confident","Confident","Very confident"]}
-          onSelect={(v)=>handleAnswer("confidence",v)}
-        />
-      )}
-
-      {step === 2 && (
-        <Question
-          text="Can you float on your front and back?"
-          options={["No","Only one","Both"]}
-          onSelect={(v)=>{
-
-            handleAnswer("float",v);
-
-            if(v !== "Both"){
-              finishQuiz();
-            }
-
-          }}
-        />
-      )}
-
-      {step === 3 && (
-        <Question
-          text="How far can you swim? (In yards)"
-          options={["12.5","25","50+"]}
-          onSelect={(v)=>handleAnswer("distance",v)}
-        />
-      )}
-
-      {step === 4 && (
-        <Question
-          text="Do you know freestyle?"
-          options={["Yes","No"]}
-          onSelect={(v)=>handleAnswer("freestyle",v)}
-        />
-      )}
-
-      {step === 5 && (
-        <Question
-          text="Do you know backstroke?"
-          options={["Yes","No"]}
-          onSelect={(v)=>handleAnswer("backstroke",v)}
-        />
-      )}
-
-      {step === 6 && (
-        <Question
-          text="Do you know breaststroke?"
-          options={["Yes","No"]}
-          onSelect={(v)=>handleAnswer("breaststroke",v)}
-        />
-      )}
-
-      {step === 7 && (
-        <Question
-          text="How long can you tread water?"
-          options={["<30 seconds","30-60 seconds","1+ minute"]}
-          onSelect={(v)=>{
-
-            handleAnswer("tread",v);
-            finishQuiz();
-
-          }}
-        />
-      )}
+        {currentQuestion.options.map(option => (
+          <button
+            key={option}
+            className="quiz-button"
+            onClick={() => handleAnswer(option)}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
 
     </div>
-
   );
-
-}
-
-function Question({
-  text,
-  options,
-  onSelect
-}:{
-  text:string
-  options:string[]
-  onSelect:(value:string)=>void
-}){
-
-  return(
-
-    <div className="quiz-container">
-
-      <h3>{text}</h3>
-
-      {options.map(option => (
-
-        <button
-          key={option}
-          className="quiz-button"
-          onClick={()=>onSelect(option)}
-        >
-          {option}
-        </button>
-
-      ))}
-
-    </div>
-
-  )
-
 }

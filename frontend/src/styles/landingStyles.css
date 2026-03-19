@@ -1,66 +1,60 @@
+.landing-wrapper {
+  min-height: 100vh;
+
+  background: 
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)),
+    url("/swimmingPooLanes.jpg");
+
+  background-size: cover;
+  background-position: center;
+}
+
 .landing-page {
   max-width: 900px;
-  margin: 60px auto;
-  padding: 20px;
-  text-align: center;
+  margin: auto;
+  padding: 60px 20px;
 }
 
 .landing-page h1 {
-  font-size: 40px;
-  margin-bottom: 20px;
+  font-size: 60px;
+  margin-bottom: 50px;
+  text-align: center;
+  color: #08409C;
 }
 
 .landing-page p {
   font-size: 18px;
   margin-bottom: 18px;
   line-height: 1.6;
+  color: #3B3565;
 }
 
 .landing-page h3 {
-  margin-top: 30px;
+  margin-top: 60px;
+  font-size: 35px;
+  text-align: center;
+  color: #08409C;
 }
 
-body {
-  background-image: url("/swimmingPooLanes.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+/* CTA Button */
 
+.quiz-cta {
+  display: block;
+  width: fit-content;
+  margin: 40px auto;
+  padding: 14px 28px;
+
+  background-color: #9A0B17;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.25s ease;
 }
 
-
-/* ===============================
-   TABLET
-   =============================== */
-
-@media (max-width: 1024px) {
-
-  .landing-page {
-    margin: 40px auto;
-  }
-
-  .landing-page h1 {
-    font-size: 34px;
-  }
-
-}
-
-/* ===============================
-   MOBILE
-   =============================== */
-
-@media (max-width: 640px) {
-
-  .landing-page {
-    margin: 20px auto;
-    padding: 15px;
-  }
-
-  .landing-page h1 {
-    font-size: 28px;
-  }
-
-  .landing-page p {
-    font-size: 16px;
-  }
-
+.quiz-cta:hover {
+  background-color: #E35254;
+  transform: translateY(-2px);
 }

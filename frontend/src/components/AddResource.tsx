@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { addResource } from '../services/api';
 import '../styles/AddResource.css'; 
+import "../styles/global.css";
 
 interface Props {
   onSuccess: () => void;
@@ -9,7 +10,7 @@ interface Props {
 const AddResource: React.FC<Props> = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     title: '',
-    resource_type: 'Video',
+    resource_type: 'stroke', 
     difficulty_level: 1,
     description: '',
     url: ''
@@ -20,7 +21,7 @@ const AddResource: React.FC<Props> = ({ onSuccess }) => {
     try {
       await addResource(formData);
       alert(" Resource added successfully!");
-      setFormData({ title: '', resource_type: 'Video', difficulty_level: 1, description: '', url: '' });
+      setFormData({ title: '', resource_type: 'Video', difficulty_level: 1, description: '', url: '' }); //fix
       onSuccess(); // Refreshes the list on the main page
     } catch (err) {
       alert(" Error adding resource");
@@ -45,9 +46,11 @@ const AddResource: React.FC<Props> = ({ onSuccess }) => {
             value={formData.resource_type}
             onChange={e => setFormData({...formData, resource_type: e.target.value})}
           >
-            <option value="Video">Video</option>
-            <option value="Article">Article</option>
-            <option value="Document">Document</option>
+            <option value="stroke">Stroke Technique</option>
+            <option value="safety">Water Safety</option>
+            <option value="breathing">Breath Control</option>
+            <option value="music">Swim Songs</option>
+            <option value="training">Training Drills</option>
           </select>
 
           <input 

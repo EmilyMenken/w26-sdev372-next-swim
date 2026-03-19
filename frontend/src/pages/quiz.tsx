@@ -1,47 +1,45 @@
 import { useState } from "react";
 import SwimQuiz from "../components/SwimQuiz";
 import WaterSafetyQuiz from "../components/WaterSafetyQuiz";
+import "../styles/global.css";
+import "../styles/quizStyles.css";
+import "../styles/navBarStyles.css"
 
-export default function Quiz(){
+export default function Quiz() {
 
-  const [quiz,setQuiz] = useState<string | null>(null)
+  const [quiz, setQuiz] = useState<string | null>(null);
 
-  if(quiz === "swim"){
-    return <SwimQuiz/>
-  }
-
-  if(quiz === "safety"){
-    return <WaterSafetyQuiz/>
-  }
-
-  return(
+  return (
 
     <div className="quiz-page">
 
-      <h1>NextSwim Quizzes</h1>
+      {!quiz && (
+        <>
+          <h1>NextSwim Quizzes</h1>
+          <p>Select a quiz to begin.</p>
 
-      <p>Select a quiz to begin.</p>
+          <div className="quiz-container">
+            <button
+              className="quiz-button"
+              onClick={() => setQuiz("swim")}
+            >
+              Swim Level Analysis
+            </button>
 
-      <div className="quiz-container">
+            <button
+              className="quiz-button"
+              onClick={() => setQuiz("safety")}
+            >
+              Water Safety Quiz
+            </button>
+          </div>
+        </>
+      )}
 
-        <button
-          className="quiz-button"
-          onClick={()=>setQuiz("swim")}
-        >
-          Swim Level Analysis
-        </button>
-
-        <button
-          className="quiz-button"
-          onClick={()=>setQuiz("safety")}
-        >
-          Water Safety Quiz
-        </button>
-
-      </div>
+      {quiz === "swim" && <SwimQuiz />}
+      {quiz === "safety" && <WaterSafetyQuiz />}
 
     </div>
 
-  )
-
+  );
 }

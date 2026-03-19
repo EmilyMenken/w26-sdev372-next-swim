@@ -5,14 +5,14 @@ export default function Navbar() {
   return (
     <nav className="navbar">
 
-      <div className="navbar-logo">
-        NextSwim
-      </div>
+      <Link to="/" className="navbar-logo">
+        NS
+      </Link>
 
       <div className="navbar-links">
         <Link to="/">Home</Link>
         <Link to="/quiz">Quiz</Link>
-        <Link to="/resources">Aquatic Resources</Link>
+        <Link to="/resources">Resources</Link>
       </div>
 
     </nav>
