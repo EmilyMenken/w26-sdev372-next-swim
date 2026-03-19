@@ -11,8 +11,8 @@ test("renders navbar links", () => {
     </MemoryRouter>
   );
 
-  expect(screen.getByText("NextSwim")).toBeInTheDocument();
+  expect(screen.getByText("NS")).toBeInTheDocument(); // updated logo text
   expect(screen.getByText("Home")).toBeInTheDocument();
   expect(screen.getByText("Quiz")).toBeInTheDocument();
-  expect(screen.getByText("Aquatic Resources")).toBeInTheDocument();
+  expect(screen.getByText("Resources")).toBeInTheDocument(); // updated link text
 });
