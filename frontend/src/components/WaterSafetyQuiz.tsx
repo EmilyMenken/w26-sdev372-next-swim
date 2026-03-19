@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
+import "../styles/global.css"
+import "../styles/quizStyles.css"
 import { Link } from "react-router-dom";
 
 export default function WaterSafetyQuiz() {
@@ -30,22 +32,13 @@ export default function WaterSafetyQuiz() {
   ];
 
   const answer = (index: number) => {
-
-    if (index === questions[step].correct) {
-      setScore(score + 1);
-    }
-
-    if (step === questions.length - 1) {
-      finishQuiz();
-    } else {
-      setStep(step + 1);
-    }
+    if (index === questions[step].correct) setScore(score + 1);
+    if (step === questions.length - 1) finishQuiz();
+    else setStep(step + 1);
   };
 
   const getRecommendations = () => {
-
     let difficultyCap = 2;
-
     if (score >= 8) difficultyCap = 4;
     else if (score >= 5) difficultyCap = 3;
 

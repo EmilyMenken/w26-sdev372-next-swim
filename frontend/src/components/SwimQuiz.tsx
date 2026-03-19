@@ -7,19 +7,9 @@ import { Link } from "react-router-dom";
 import "../styles/quizStyles.css";
 import "../styles/global.css";
 
-type AnswerMap = {
-  [key: string]: string;
-};
-
-type Question = {
-  id: string;
-  text: string;
-  options: string[];
-  next: (value: string) => string | null;
-};
+type AnswerMap = { [key: string]: string };
 
 export default function SwimQuiz() {
-
   const [answers, setAnswers] = useState<AnswerMap>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -48,7 +38,6 @@ export default function SwimQuiz() {
     getResources().then(setResources);
   }, []);
 
-  // QUESTIONS
   const questions = [
     {
       id: "ability",
@@ -188,7 +177,7 @@ export default function SwimQuiz() {
 
   const currentQuestion = questions[currentIndex];
 
-  const findNextIndex = (id: string | null) => {
+  const findNextIndex = (id: string | undefined) => {
     if (!id) return -1;
     return questions.findIndex(q => q.id === id);
   };
@@ -200,24 +189,16 @@ export default function SwimQuiz() {
     const nextId = currentQuestion.next(value);
     const nextIndex = findNextIndex(nextId);
 
-    if (nextIndex === -1) {
-      finishQuiz(updated);
-    } else {
-      setCurrentIndex(nextIndex);
-    }
+    if (nextIndex === -1) finishQuiz(updated);
+    else setCurrentIndex(nextIndex);
   };
 
   const calculateScores = (a: AnswerMap) => {
-
-    let comfort = 0;
-    let technique = 0;
-    let endurance = 0;
-    let safety = 0;
-
+    let comfort = 0, technique = 0, endurance = 0, safety = 0;
     if (a.confidence === "4") comfort += 2;
     if (a.float === "Both") comfort += 2;
 
-    ["freestyle", "backstroke", "breaststroke", "butterfly"].forEach(s => {
+    ["freestyle","backstroke","breaststroke","butterfly"].forEach(s => {
       if (a[s] === "Yes") technique++;
     });
 
@@ -231,7 +212,6 @@ export default function SwimQuiz() {
     if (a.tread && a.tread !== "<1 min") safety++;
 
     const result = { comfort, technique, endurance, safety };
-
     setScores(result);
 
     setLevels({
@@ -246,47 +226,34 @@ export default function SwimQuiz() {
 
   const generateFeedback = (a: AnswerMap) => {
     let level = "";
-    let tips: string[] = [];
+    const tips: string[] = [];
 
     if (a.float !== "Both") level = "Level 1: Water Acclimation";
     else if (a.distance === "12.5" || a.tread === "<1 min") level = "Level 2: Basic Survival";
-    else if (a.freestyle === "No" || a.backstroke === "No" || a.breaststroke === "No")
-      level = "Level 3: Stroke Development";
+    else if (a.freestyle === "No" || a.backstroke === "No" || a.breaststroke === "No") level = "Level 3: Stroke Development";
     else level = "Level 4: Advanced Technique";
 
-    if (a.confidence === "1" || a.confidence === "2") {
-      tips.push("Build comfort in shallow water.");
-    }
-
-    if (a.distance === "12.5") {
-      tips.push("Increase endurance with short repeated swims.");
-    }
-
-    if (a.tread === "<1 min") {
-      tips.push("Practice treading water techniques.");
-    }
-
-    if (tips.length === 0) {
-      tips.push("Great job! Continue refining technique.");
-    }
+    if (a.confidence === "1" || a.confidence === "2") tips.push("Build comfort in shallow water.");
+    if (a.distance === "12.5") tips.push("Increase endurance with short repeated swims.");
+    if (a.tread === "<1 min") tips.push("Practice treading water techniques.");
+    if (tips.length === 0) tips.push("Great job! Continue refining technique.");
 
     setSwimLevel(level);
     setFeedback(tips);
   };
 
   const getRecommendedResources = (scoreData: any) => {
-
     let difficultyCap = 2;
-
-    if (scoreData.endurance >= 3 || scoreData.technique >= 3) {
-      difficultyCap = 4;
-    } else if (scoreData.endurance >= 2) {
-      difficultyCap = 3;
-    }
+    if (scoreData.endurance >= 3 || scoreData.technique >= 3) difficultyCap = 4;
+    else if (scoreData.endurance >= 2) difficultyCap = 3;
 
     return resources
-      .filter(r => r.difficulty_level && r.difficulty_level <= difficultyCap)
-      .slice(0, 5);
+      .filter(r => (r.difficulty_level ?? 1) <= difficultyCap)
+      .slice(0, 5)
+      .map(r => ({
+        ...r,
+        url: r.url ?? null  // fix here: undefined → null
+      }));
   };
 
   const finishQuiz = (finalAnswers: AnswerMap) => {
@@ -299,13 +266,9 @@ export default function SwimQuiz() {
   if (submitted) {
     return (
       <div className="quiz-page">
-
         <h2>{swimLevel}</h2>
-
         <h3>Your Personalized Plan</h3>
-        <ul>
-          {feedback.map((tip, i) => <li key={i}>{tip}</li>)}
-        </ul>
+        <ul>{feedback.map((tip,i)=><li key={i}>{tip}</li>)}</ul>
 
         <SkillMeter label="Comfort" score={scores.comfort} max={4} level={levels.comfort} />
         <SkillMeter label="Technique" score={scores.technique} max={4} level={levels.technique} />
@@ -314,48 +277,25 @@ export default function SwimQuiz() {
 
         <h3>Recommended Resources</h3>
         <ul>
-          {recommended.map(r => (
-            <li key={r.id}>
-              <a href={r.url} target="_blank">{r.title}</a>
-            </li>
-          ))}
+          {recommended.map(r => <li key={r.id}><a href={r.url ?? ""} target="_blank">{r.title}</a></li>)}
         </ul>
 
-        <Link to="/resources" className="quiz-nav-button">
-          Explore Full Resource Library
-        </Link>
+        <Link to="/resources" className="quiz-nav-button">Explore Full Resource Library</Link>
 
-        <button onClick={() => {
-          setAnswers({});
-          setCurrentIndex(0);
-          setSubmitted(false);
-        }}>
-          Retake Quiz
-        </button>
-
+        <button onClick={() => { setAnswers({}); setCurrentIndex(0); setSubmitted(false); }}>Retake Quiz</button>
       </div>
     );
   }
 
   return (
     <div className="quiz-page">
-
-      <QuizProgress current={currentIndex + 1} total={questions.length} />
-
+      <QuizProgress current={currentIndex+1} total={questions.length} />
       <div className="quiz-container">
         <h3>{currentQuestion.text}</h3>
-
         {currentQuestion.options.map(option => (
-          <button
-            key={option}
-            className="quiz-button"
-            onClick={() => handleAnswer(option)}
-          >
-            {option}
-          </button>
+          <button key={option} className="quiz-button" onClick={()=>handleAnswer(option)}>{option}</button>
         ))}
       </div>
-
     </div>
   );
 }
