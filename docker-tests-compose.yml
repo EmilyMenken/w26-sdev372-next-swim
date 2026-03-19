@@ -31,15 +31,19 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: npm run test:ci
+        
+    # Run tests first, then start server if tests pass
+    command: sh -c "npm test && node server.js"
 
   frontend:
     build: ./frontend
     ports:
       - "5173:80"
     depends_on:
+
       - backend
-    command: npm test
+    # Run frontend tests first, then serve via nginx if tests pass
+    command: sh -c "npm test && nginx -g 'daemon off;'"
 
 volumes:
   db_data:
