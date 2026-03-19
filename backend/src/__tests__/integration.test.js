@@ -1,29 +1,21 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { it, expect, vi } from "vitest";
 import request from "supertest";
 import app from "../../app.js";
 import pool from "../config/db.js";
 
-describe("Aquatic Resources API Integration Tests", () => {
-  beforeAll(async () => {
-    // Clear table before running tests
-    await pool.query("DROP TABLE IF EXISTS aquatic_resources");
-    await pool.query(`
-      CREATE TABLE aquatic_resources (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        title VARCHAR(255),
-        resource_type VARCHAR(50),
-        difficulty_level INT,
-        description TEXT,
-        url VARCHAR(255)
-      )
-    `);
-  });
-
-  afterAll(async () => {
-    await pool.end(); // close db connection
-  });
+// mocks db
+vi.mock("../config/db.js", () => {
+  return {
+    default: {
+      query: vi.fn(),
+      end: vi.fn()
+    }
+  };
+});
 
   it("GET /api/aquatic-resources returns empty initially", async () => {
+    pool.query.mockResolvedValue([[]]);
+
     const res = await request(app).get("/api/aquatic-resources");
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
@@ -38,6 +30,8 @@ describe("Aquatic Resources API Integration Tests", () => {
       url: "http://example.com",
     };
 
+    pool.query.mockResolvedValue([{ insertId: 1 }]);
+
     const res = await request(app)
       .post("/api/aquatic-resources")
       .send(newResource);
@@ -48,10 +42,20 @@ describe("Aquatic Resources API Integration Tests", () => {
   });
 
   it("GET /api/aquatic-resources returns the created resource", async () => {
+    pool.query.mockResolvedValue([[
+      {
+        id: 1,
+        title: "Integration Test Resource",
+        resource_type: "Video",
+        difficulty_level: 1,
+        description: "desc",
+        url: "http://example.com"
+      }
+    ]]);
+
     const res = await request(app).get("/api/aquatic-resources");
 
     expect(res.status).toBe(200);
     expect(res.body.length).toBe(1);
     expect(res.body[0].title).toBe("Integration Test Resource");
   });
-});
