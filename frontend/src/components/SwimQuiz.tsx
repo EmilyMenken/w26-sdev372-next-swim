@@ -178,20 +178,22 @@ export default function SwimQuiz() {
   const currentQuestion = questions[currentIndex];
 
   const findNextIndex = (id: string | undefined) => {
-    if (!id) return -1;
-    return questions.findIndex(q => q.id === id);
-  };
+  if (!id) return -1;
+  return questions.findIndex(q => q.id === id);
+};
 
-  const handleAnswer = (value: string) => {
-    const updated = { ...answers, [currentQuestion.id]: value };
-    setAnswers(updated);
+const handleAnswer = (value: string) => {
+  const updated = { ...answers, [currentQuestion.id]: value };
+  setAnswers(updated);
 
-    const nextId = currentQuestion.next(value);
-    const nextIndex = findNextIndex(nextId);
+  const nextIdRaw = currentQuestion.next(value);
+  const nextId: string | undefined = nextIdRaw ?? undefined;
 
-    if (nextIndex === -1) finishQuiz(updated);
-    else setCurrentIndex(nextIndex);
-  };
+  const nextIndex = findNextIndex(nextId);
+
+  if (nextIndex === -1) finishQuiz(updated);
+  else setCurrentIndex(nextIndex);
+};
 
   const calculateScores = (a: AnswerMap) => {
     let comfort = 0, technique = 0, endurance = 0, safety = 0;

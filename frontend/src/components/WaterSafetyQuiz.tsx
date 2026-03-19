@@ -43,8 +43,12 @@ export default function WaterSafetyQuiz() {
     else if (score >= 5) difficultyCap = 3;
 
     return resources
-      .filter(r => r.difficulty_level && r.difficulty_level <= difficultyCap)
-      .slice(0, 5);
+      .filter(r => (r.difficulty_level ?? 1) <= difficultyCap)  // normalize undefined → 1
+      .slice(0, 5)
+      .map(r => ({
+        ...r,
+        url: r.url ?? ""  // normalize null/undefined → empty string
+      }));
   };
 
   const finishQuiz = () => {
@@ -70,7 +74,7 @@ export default function WaterSafetyQuiz() {
         <ul>
           {recommended.map(r => (
             <li key={r.id}>
-              <a href={r.url} target="_blank">{r.title}</a>
+              <a href={r.url ?? ""} target="_blank">{r.title}</a>
             </li>
           ))}
         </ul>

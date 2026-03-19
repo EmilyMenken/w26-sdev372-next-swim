@@ -5,6 +5,7 @@ import AddResource from "../components/AddResource";
 import "../styles/global.css";
 import "../styles/AddResource.css";
 import "../styles/resourceStyles.css";
+
 export default function Resources() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [activeTab, setActiveTab] = useState("stroke");
@@ -88,7 +89,7 @@ export default function Resources() {
                   <p><strong>Difficulty:</strong> {r.difficulty_level}</p>
 
                   <a
-                    href={r.url}
+                    href={r.url ?? ""}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
