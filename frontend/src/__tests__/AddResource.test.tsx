@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import AddResource from "../components/AddResourceForm";
+import AddResource from "../components/AddResource";
 import * as api from "../services/api";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 

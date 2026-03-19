@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { getResources } from "../services/api";
 import type { Resource } from "../types/resource";
-import AddResource from "../components/AddResourceForm";
+import AddResource from "../components/AddResource"; 
 import "../styles/global.css";
-
-
 export default function Resources() {
-
   const [resources, setResources] = useState<Resource[]>([]);
   const [activeTab, setActiveTab] = useState("stroke");
 
-  const loadData = () => {
-    getResources().then((data) => setResources(data));
+  const loadData = async () => {
+    try {
+      const data = await getResources();
+      setResources(data);
+    } catch (err) {
+      console.error("Error loading resources:", err);
+    }
   };
 
   useEffect(() => {
@@ -30,6 +32,7 @@ export default function Resources() {
     (r) => r.resource_type === activeTab
   );
 
+  // Group by difficulty
   const groupedByLevel: Record<number, Resource[]> = {};
 
   filteredResources.forEach((r) => {
@@ -43,9 +46,10 @@ export default function Resources() {
 
       <h1>Swim Resource Library</h1>
 
+      {/* FORM  */}
       <AddResource onSuccess={loadData} />
 
-      {/* Tabs */}
+      {/* CATEGORY TABS */}
       <div className="tabs">
         {tabs.map(tab => (
           <button
@@ -58,13 +62,18 @@ export default function Resources() {
         ))}
       </div>
 
-      {/* Collapsible Sections */}
+      {/* EMPTY STATE */}
+      {filteredResources.length === 0 && (
+        <p>No resources found for this category.</p>
+      )}
+
+      {/* GROUPED DISPLAY */}
       {Object.keys(groupedByLevel)
         .sort((a,b)=>Number(a)-Number(b))
         .map(level => (
-          <details key={level} className="resource-section">
+          <details key={level} className="resource-section" open>
 
-            <summary>Level {level} Resources</summary>
+            <summary>Level {level}</summary>
 
             <ul className="resource-list">
               {groupedByLevel[Number(level)].map(r => (
@@ -72,19 +81,17 @@ export default function Resources() {
 
                   <h3>{r.title}</h3>
 
-                  {r.description && (
-                    <p>{r.description}</p>
-                  )}
+                  {r.description && <p>{r.description}</p>}
 
-                  {r.url && (
-                    <a
-                      href={r.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View Resource
-                    </a>
-                  )}
+                  <p><strong>Difficulty:</strong> {r.difficulty_level}</p>
+
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Resource
+                  </a>
 
                 </li>
               ))}
@@ -92,7 +99,6 @@ export default function Resources() {
 
           </details>
         ))}
-
     </div>
   );
 }
