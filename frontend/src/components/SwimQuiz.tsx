@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getResources } from "../services/api";
+import { getResources, getQuiz } from "../services/api";
 import type { Resource } from "../types/resource";
 import QuizProgress from "../components/ProgressBar";
 import SkillMeter from "../components/SkillMeter";
@@ -33,170 +33,42 @@ export default function SwimQuiz() {
 
   const [swimLevel, setSwimLevel] = useState("");
   const [feedback, setFeedback] = useState<string[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
 
   useEffect(() => {
     getResources().then(setResources);
   }, []);
 
-  const questions = [
-    {
-      id: "ability",
-      text: "Which best describes your swimming ability?",
-      options: ["Beginner","Intermediate","Advanced"],
-      next: () => "confidence"
-    },
-    {
-      id: "confidence",
-      text: "How confident do you feel in the water?",
-      options: ["1","2","3","4"],
-      next: (a:string)=> (a==="3"||a==="4") ? "deepConfidence" : "faceWater"
-    },
-    {
-      id: "deepConfidence",
-      text: "How confident are you in deep water (>7 ft)?",
-      options: ["Low","Medium","High"],
-      next: () => "faceWater"
-    },
-    {
-      id: "faceWater",
-      text: "How comfortable are you putting your face in the water?",
-      options: ["Not comfortable","Somewhat","Comfortable"],
-      next: () => "float"
-    },
-    {
-      id: "float",
-      text: "Can you float on your front and back?",
-      options: ["No","One","Both"],
-      endIf: (a:string)=> a !== "Both",
-      next: () => "distance"
-    },
-    {
-      id: "distance",
-      text: "How far can you swim (yards)?",
-      options: ["12.5","25","50+"],
-      next: () => "breathing"
-    },
-    {
-      id: "breathing",
-      text: "How confident are you with rhythmic/rotary breathing?",
-      options: ["1","2","3","4"],
-      endIf: (a:string)=> a==="1"||a==="2",
-      next: () => "streamline"
-    },
-    {
-      id: "streamline",
-      text: "Do you know streamline position?",
-      options: ["Yes","No"],
-      next: () => "freestyle"
-    },
-    {
-      id: "freestyle",
-      text: "Do you know freestyle (front crawl)?",
-      options: ["Yes","No"],
-      endIf: (a:string)=> a==="No",
-      next: () => "backstroke"
-    },
-    {
-      id: "backstroke",
-      text: "Do you know backstroke?",
-      options: ["Yes","No"],
-      endIf: (a:string)=> a==="No",
-      next: () => "elementary"
-    },
-    {
-      id: "elementary",
-      text: "Do you know elementary backstroke?",
-      options: ["Yes","No"],
-      next: () => "sidestroke"
-    },
-    {
-      id: "sidestroke",
-      text: "Do you know sidestroke?",
-      options: ["Yes","No"],
-      next: () => "breaststroke"
-    },
-    {
-      id: "breaststroke",
-      text: "Do you know breaststroke?",
-      options: ["Yes","No"],
-      endIf: (a:string)=> a==="No",
-      next: () => "dolphin"
-    },
-    {
-      id: "dolphin",
-      text: "Do you know dolphin kick?",
-      options: ["Yes","No"],
-      endIf: (a:string)=> a==="No",
-      next: () => "surfaceDive"
-    },
-    {
-      id: "surfaceDive",
-      text: "Can you do a surface dive?",
-      options: ["Yes","No"],
-      next: () => "dives"
-    },
-    {
-      id: "dives",
-      text: "Can you do kneeling, standing, or starting dives?",
-      options: ["Yes","No"],
-      next: () => "butterfly"
-    },
-    {
-      id: "butterfly",
-      text: "Do you know butterfly?",
-      options: ["Yes","No"],
-      next: () => "tread"
-    },
-    {
-      id: "tread",
-      text: "How long can you tread water?",
-      options: ["<1 min","1-2 min","2+ min"],
-      endIf: (a:string)=> a === "<1 min",
-      next: () => "openTurn"
-    },
-    {
-      id: "openTurn",
-      text: "Can you do an open turn?",
-      options: ["Yes","No"],
-      endIf: (a:string)=> a==="No",
-      next: () => "scull"
-    },
-    {
-      id: "scull",
-      text: "Do you know standard sculling (front/back)?",
-      options: ["Yes","No"],
-      next: () => "flipTurn"
-    },
-    {
-      id: "flipTurn",
-      text: "Can you do a flip turn?",
-      options: ["Yes","No"],
-      next: () => null
-    }
-  ];
+  useEffect(() => {
+    getQuiz("swim").then((data) => {
+      const formatted = data.map((q: any) => ({
+        id: q.question_id,
+        text: q.question_text,
+        options: q.options
+      }));
+
+      setQuestions(formatted);
+    });
+  }, []);
+
+  if (!questions.length) return <div>Loading...</div>;
 
   const currentQuestion = questions[currentIndex];
 
-  const findNextIndex = (id: string | undefined) => {
-  if (!id) return -1;
-  return questions.findIndex(q => q.id === id);
-};
+  const handleAnswer = (value: string) => {
+    const updated = { ...answers, [currentQuestion.id]: value };
+    setAnswers(updated);
 
-const handleAnswer = (value: string) => {
-  const updated = { ...answers, [currentQuestion.id]: value };
-  setAnswers(updated);
-
-  const nextIdRaw = currentQuestion.next(value);
-  const nextId: string | undefined = nextIdRaw ?? undefined;
-
-  const nextIndex = findNextIndex(nextId);
-
-  if (nextIndex === -1) finishQuiz(updated);
-  else setCurrentIndex(nextIndex);
-};
+    if (currentIndex === questions.length - 1) {
+      finishQuiz(updated);
+    } else {
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
 
   const calculateScores = (a: AnswerMap) => {
     let comfort = 0, technique = 0, endurance = 0, safety = 0;
+
     if (a.confidence === "4") comfort += 2;
     if (a.float === "Both") comfort += 2;
 
@@ -254,7 +126,7 @@ const handleAnswer = (value: string) => {
       .slice(0, 5)
       .map(r => ({
         ...r,
-        url: r.url ?? null  // fix here: undefined → null
+        url: r.url ?? null
       }));
   };
 
@@ -270,7 +142,10 @@ const handleAnswer = (value: string) => {
       <div className="quiz-page">
         <h2>{swimLevel}</h2>
         <h3>Your Personalized Plan</h3>
-        <ul>{feedback.map((tip,i)=><li key={i}>{tip}</li>)}</ul>
+
+        <ul>
+          {feedback.map((tip, i) => <li key={i}>{tip}</li>)}
+        </ul>
 
         <SkillMeter label="Comfort" score={scores.comfort} max={4} level={levels.comfort} />
         <SkillMeter label="Technique" score={scores.technique} max={4} level={levels.technique} />
@@ -279,23 +154,43 @@ const handleAnswer = (value: string) => {
 
         <h3>Recommended Resources</h3>
         <ul>
-          {recommended.map(r => <li key={r.id}><a href={r.url ?? ""} target="_blank">{r.title}</a></li>)}
+          {recommended.map(r => (
+            <li key={r.id}>
+              <a href={r.url ?? ""} target="_blank">{r.title}</a>
+            </li>
+          ))}
         </ul>
 
-        <Link to="/resources" className="quiz-nav-button">Explore Full Resource Library</Link>
+        <Link to="/resources" className="quiz-nav-button">
+          Explore Full Resource Library
+        </Link>
 
-        <button onClick={() => { setAnswers({}); setCurrentIndex(0); setSubmitted(false); }}>Retake Quiz</button>
+        <button onClick={() => {
+          setAnswers({});
+          setCurrentIndex(0);
+          setSubmitted(false);
+        }}>
+          Retake Quiz
+        </button>
       </div>
     );
   }
 
   return (
     <div className="quiz-page">
-      <QuizProgress current={currentIndex+1} total={questions.length} />
+      <QuizProgress current={currentIndex + 1} total={questions.length} />
+
       <div className="quiz-container">
         <h3>{currentQuestion.text}</h3>
-        {currentQuestion.options.map(option => (
-          <button key={option} className="quiz-button" onClick={()=>handleAnswer(option)}>{option}</button>
+
+        {currentQuestion.options.map((option: string) => (
+          <button
+            key={option}
+            className="quiz-button"
+            onClick={() => handleAnswer(option)}
+          >
+            {option}
+          </button>
         ))}
       </div>
     </div>

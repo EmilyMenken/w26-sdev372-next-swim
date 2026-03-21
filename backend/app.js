@@ -1,7 +1,7 @@
 // backend/app.js
 import express from "express";
 import cors from "cors";
-
+import quizRoutes from "./src/routes/quiz.js";
 import router from "./src/routes/aquaticResources.js";
 
 const app = express();
@@ -12,6 +12,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/aquatic-resources", router);
+app.use("/api/quiz", quizRoutes);
+
 
 // Health check route
 app.get("/api/swim", (req, res) => {
