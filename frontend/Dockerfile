@@ -18,6 +18,7 @@ RUN npm install --force
 
 # Copy source code
 COPY src ./src
+COPY public ./public
 COPY vite.config.ts ./
 COPY tsconfig.json ./
 COPY tsconfig.app.json ./

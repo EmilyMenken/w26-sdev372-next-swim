@@ -1,3 +1,6 @@
+# USE IF YOUR DB_USER *IS* ROOT
+# COPY AND RENAME TO docker-compose.yml
+
 services:
   db:
     image: mysql:8

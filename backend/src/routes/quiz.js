@@ -13,10 +13,10 @@ router.get("/:type", async (req, res) => {
       [type]
     );
 
-    // parse JSON options
+    // Ensure options is always an array
     const formatted = rows.map(q => ({
       ...q,
-      options: JSON.parse(q.options)
+      options: Array.isArray(q.options) ? q.options : JSON.parse(q.options)
     }));
 
     res.json(formatted);
