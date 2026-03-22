@@ -6,19 +6,40 @@ import "@testing-library/jest-dom";
 
 vi.mock("../services/api");
 
+const mockQuizData = [
+  {
+    question_id: 1,
+    question_text: "Which best describes your swimming ability?",
+    options: ["Beginner", "Intermediate", "Advanced", "Expert"] // ✅ FIXED
+  },
+  {
+    question_id: 2,
+    question_text: "How confident do you feel in the water?",
+    options: ["Not confident", "Somewhat confident", "Confident", "Very confident"] // ✅ FIXED
+  }
+];
+
 test("renders first question", async () => {
-  (api.getResources as any).mockResolvedValue([]);
+  (api.getQuiz as any).mockResolvedValue(mockQuizData);
+  (api.getResources as any).mockResolvedValue([]); // still needed
+
   render(<SwimQuiz />);
-  // Waits for the first question text to appear
-  expect(await screen.findByText("Which best describes your swimming ability?")).toBeInTheDocument();
+
+  expect(
+    await screen.findByText("Which best describes your swimming ability?")
+  ).toBeInTheDocument();
 });
 
 test("advances to next question on answer", async () => {
+  (api.getQuiz as any).mockResolvedValue(mockQuizData);
   (api.getResources as any).mockResolvedValue([]);
+
   render(<SwimQuiz />);
-  
-  const beginnerBtn = await screen.findByText("Beginner");
-  fireEvent.click(beginnerBtn);
-  
-  expect(await screen.findByText("How confident do you feel in the water?")).toBeInTheDocument();
+
+  const btn = await screen.findByText("Beginner");
+  fireEvent.click(btn);
+
+  expect(
+    await screen.findByText("How confident do you feel in the water?")
+  ).toBeInTheDocument();
 });
