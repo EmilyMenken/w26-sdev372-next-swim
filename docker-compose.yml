@@ -1,0 +1,44 @@
+# USE IF YOUR DB_USER *IS* ROOT
+# COPY AND RENAME TO docker-compose.yml
+
+services:
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # password for root user
+      MYSQL_DATABASE: ${DB_NAME}           # optional initial database
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backend/src/config:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: root                    # connect as root
+      DB_PASSWORD: ${DB_PASSWORD}      # root password
+      DB_NAME: ${DB_NAME}
+      PORT: ${PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
