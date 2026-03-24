@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import Landing from "../pages/Landing";
 import { MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
 import { expect, test } from "vitest";
 
 test("renders landing content", () => {

@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import Navbar from "../components/NavBar";
 import { MemoryRouter } from "react-router-dom";
-import "@testing-library/jest-dom";
 import { expect, test } from "vitest";
 
 test("renders navbar links", () => {

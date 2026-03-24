@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import QuizProgress from "../components/ProgressBar";
-import "@testing-library/jest-dom";
 import { expect, test } from "vitest";
 
 test("renders correct progress text", () => {

@@ -2,7 +2,6 @@ import { render, screen, waitFor } from "@testing-library/react";
 import Resources from "../pages/resources";
 import * as api from "../services/api";
 import { expect, test, vi } from "vitest";
-import "@testing-library/jest-dom";
 
 vi.mock("../services/api");
 
