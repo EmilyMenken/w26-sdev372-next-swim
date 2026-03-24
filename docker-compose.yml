@@ -1,13 +1,10 @@
-# USE IF YOUR DB_USER *IS* ROOT
-# COPY AND RENAME TO docker-compose.yml
-
 services:
   db:
     image: mysql:8
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}  # password for root user
-      MYSQL_DATABASE: ${DB_NAME}           # optional initial database
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3306:3306"
     volumes:
@@ -25,8 +22,8 @@ services:
       - "${PORT}:${PORT}"
     environment:
       DB_HOST: ${DB_HOST}
-      DB_USER: root                    # connect as root
-      DB_PASSWORD: ${DB_PASSWORD}      # root password
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
       PORT: ${PORT}
     depends_on:
@@ -39,6 +36,20 @@ services:
       - "5173:80"
     depends_on:
       - backend
+
+  # NEW: test-only container
+  test:
+    build: ./backend
+    command: npm test
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      PORT: ${PORT}
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:
