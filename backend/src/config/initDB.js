@@ -1,6 +1,6 @@
 import pool from "./db.js";
 
-async function initDB(retries = 5) {
+async function initDB(retries = 15) {
   while (retries) {
     try {
       await pool.query("USE nextswim");
