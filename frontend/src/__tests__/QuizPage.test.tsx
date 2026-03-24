@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import Quiz from "../pages/quiz";
 import * as api from "../services/api";
-import "@testing-library/jest-dom";
 import { expect, test, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 

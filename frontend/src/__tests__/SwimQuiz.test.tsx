@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import SwimQuiz from "../components/SwimQuiz";
 import * as api from "../services/api";
 import { expect, test, vi } from "vitest";
-import "@testing-library/jest-dom";
 
 vi.mock("../services/api");
 

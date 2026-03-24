@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3001
 
 # Print info message and start the server
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "npx vitest run && node server.js"]
