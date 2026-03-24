@@ -24,7 +24,8 @@ COPY vitest.config.js ./vitest.config.js
 COPY vitest.setup.ts ./vitest.setup.ts
 
 # Run frontend tests BEFORE build
-RUN npx vitest run --config vitest.config.js
+ARG CACHEBUST=1
+RUN echo "CACHEBUST=$CACHEBUST" && npm run test
 
 # Build frontend
 RUN npm run build
