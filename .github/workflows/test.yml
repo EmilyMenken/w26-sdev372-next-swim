@@ -28,9 +28,3 @@ jobs:
         run: |
           docker compose up --build --exit-code-from test
           docker compose down
-
-  deploy:
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/deploy.yml
-    secrets: inherit
