@@ -24,7 +24,13 @@ jobs:
           echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
 
-      - name: Build and run tests (EXITS PROPERLY)
+      - name: Build and run tests
         run: |
-          docker compose up --build --exit-code-from test          
+          docker compose up --build --exit-code-from test
           docker compose down
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
