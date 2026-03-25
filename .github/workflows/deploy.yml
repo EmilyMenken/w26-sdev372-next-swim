@@ -13,6 +13,11 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
+      - name: Debug Tailscale secrets
+        run: |
+          if [ -z "${{ secrets.TS_OAUTH_CLIENT_ID }}" ]; then echo "CLIENT ID EMPTY"; else echo "CLIENT ID OK"; fi
+          if [ -z "${{ secrets.TS_OAUTH_SECRET }}" ]; then echo "SECRET EMPTY"; else echo "SECRET OK"; fi
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
