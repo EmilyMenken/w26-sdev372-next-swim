@@ -13,16 +13,10 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      - name: Debug Tailscale secrets
-        run: |
-          if [ -z "${{ secrets.TS_OAUTH_CLIENT_ID }}" ]; then echo "CLIENT ID EMPTY"; else echo "CLIENT ID OK"; fi
-          if [ -z "${{ secrets.TS_OAUTH_SECRET }}" ]; then echo "SECRET EMPTY"; else echo "SECRET OK"; fi
-
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          authkey: ${{ secrets.TS_AUTHKEY }}
 
       - name: SSH and deploy
         uses: appleboy/ssh-action@v0.1.7
